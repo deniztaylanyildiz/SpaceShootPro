@@ -21,14 +21,15 @@ public class Player : MonoBehaviour
     private bool _isITHot=false;
     [SerializeField]
     private float _coolDownTimer;
-  
+    [SerializeField]
+    private float _timerHelper = 0;
+    [SerializeField]
+    private int _lives=3;
+    [SerializeField]
+    private GameObject _myContain;
+
 
     
-    void Start()
-    {
-
-        // transform.position = new Vector3(1, 2, 3);//basic transform
-    }
 
     void Update()
     {
@@ -80,28 +81,39 @@ public class Player : MonoBehaviour
 
     void LaserShoot()
     {
-        float timerhelper = 0;
+        
 
 
             if (Input.GetKeyDown(KeyCode.Space)&&_isITHot==false) {
                 _isITHot = true;
-                Instantiate(_laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
-            
+             GameObject newLaser= Instantiate(_laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+            newLaser.transform.parent = _myContain.transform;
             }
         
         else if(_isITHot==true) {
-            if (_coolDownTimer >= timerhelper)
+            if (_coolDownTimer >= _timerHelper)
             {
 
-                timerhelper += Time.deltaTime;
+              _timerHelper += Time.deltaTime;
             }
             else { 
             _isITHot= false;
-                timerhelper= 0;
+                _timerHelper= 0;
             }
         }
     }
     
 
+
+    public void TakeDamage(int damage)
+    {
+        _lives-=damage;
+        Debug.Log(_lives);
+        if (_lives <= 0)
+        {
+            Debug.Log("Die");
+
+        }
+    }
 
     }

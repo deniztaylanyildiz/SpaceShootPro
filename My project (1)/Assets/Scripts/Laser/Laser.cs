@@ -10,13 +10,6 @@ public class Laser : MonoBehaviour
     
    
 
-    //speed float as 8
-    //rotation
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
