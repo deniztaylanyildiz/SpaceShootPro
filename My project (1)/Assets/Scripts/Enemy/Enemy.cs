@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,10 +15,11 @@ public class Enemy : MonoBehaviour
     private Vector3 _enemyMoveVector;
     [SerializeField]
     private int _enemyDamage = 1;
-  
+    private Player _player;
     private void Awake()
     {
-      
+        transform.Rotate(new Vector3(0, 0, 270), Space.World);
+        _player=GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
     void Update()
@@ -42,7 +44,8 @@ public class Enemy : MonoBehaviour
 
 
     }
-    private void OnTriggerEnter(Collider other)
+    
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
         {
@@ -50,14 +53,19 @@ public class Enemy : MonoBehaviour
             Destroy(gameObject);
             if (player != null)
                 player.TakeDamage(_enemyDamage);
+           
+
+
+
 
         }
         if (other.tag == "Laser")
         {
             Destroy(gameObject);
             Destroy(other.gameObject);
+            _player.AddScore(10);
 
-
+            
         }
     }
 
