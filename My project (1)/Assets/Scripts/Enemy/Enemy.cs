@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviour
     {
 
         Moving();
-        Die();
+        DieInTime();
 
 
 
@@ -38,10 +38,10 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void Die()
+    private void DieInTime()
     {
         Destroy(gameObject, _enemyLiveTime);
-
+     
 
     }
     
@@ -49,24 +49,46 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            Player player=other.GetComponent<Player>();
-            Destroy(gameObject);
+            GetValuesOnHit();
+
+
+            Player player =other.GetComponent<Player>();
+            Destroy(gameObject,1F);
             if (player != null)
                 player.TakeDamage(_enemyDamage);
-           
 
-
+          
 
 
         }
         if (other.tag == "Laser")
         {
-            Destroy(gameObject);
+            GetValuesOnHit();
+
+            Destroy(gameObject,1.1F);
             Destroy(other.gameObject);
             _player.AddScore(10);
 
-            
+           
         }
+       
     }
+
+
+    private void GetValuesOnHit()
+    {
+
+        _enemySpeed *= 0.6F;
+        Animator enemyAnim = gameObject.GetComponent<Animator>();
+        Collider2D enemycollider = gameObject.GetComponent<Collider2D>();
+        if (enemycollider != null || enemyAnim != null)
+        {
+            enemycollider.enabled = false;
+            enemyAnim.SetTrigger("Isdead");
+        }
+        else
+            Debug.Log("Some Prolems");
+    }
+
 
 }

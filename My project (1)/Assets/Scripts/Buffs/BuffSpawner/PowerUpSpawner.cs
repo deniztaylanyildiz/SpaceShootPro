@@ -14,8 +14,9 @@ public class PowerUpSpawner : MonoBehaviour
     private float _helper = 0;
     [SerializeField]
     private GameObject _myContain;
+    public  bool _iscanSpawn=false;
+    
 
-   
 
     void Start()
     {
@@ -25,10 +26,11 @@ public class PowerUpSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+     if (_iscanSpawn) { 
         Spawn();
        
         SpawnTimer();
+        }
     }
     void SpawnTimer()
     {
@@ -64,7 +66,7 @@ public class PowerUpSpawner : MonoBehaviour
             int randomSpawner = Random.Range(0, powerUps.Length);
             float c = UnityEngine.Random.Range(4, -4);
             Vector3 alpha = transform.position + new Vector3(0, c, 0);
-            Debug.Log("Spawned");
+          
             GameObject newBuff = Instantiate(powerUps[randomSpawner], alpha, Quaternion.identity);
             newBuff.transform.parent = _myContain.transform;
             _isCanSpawn = false;
@@ -74,6 +76,12 @@ public class PowerUpSpawner : MonoBehaviour
 
         }
 
+
+    }
+    public void NowCanSpawn()
+    {
+
+        _isCanSpawn = true;
 
     }
 }

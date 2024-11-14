@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
@@ -38,14 +39,35 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _shield;
     [SerializeField]
-    private int _score=0;
+    private int _score = 0;
 
     public bool _isShieldActive = false;
     public bool _isSpeedBoostActive = false;
     public bool _isTripleShootActive = false;
     [SerializeField]
     private GameObject _tripleShoot;
+    [SerializeField]
+    private GameObject _hp2;
+    [SerializeField]
+    private GameObject _hp1;
 
+    [SerializeField] private AudioSource _laserSound;
+    
+
+    public static Player Instance { get; private set; }
+
+    private void Awake()
+    {
+        _laserSound= GetComponent<AudioSource>();
+
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+        Instance = this;
+
+    }
     private void Start()
     {
 
@@ -54,17 +76,16 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-       
+
 
 
 
         CalculateMovement();
         BounchVers1();
         LaserShoot();
-        
+        HpCheck();
+
     }
-
-
 
 
     void CalculateMovement()
@@ -73,9 +94,9 @@ public class Player : MonoBehaviour
         _verticallInput = Input.GetAxis("Vertical");
         _horizontallInput = Input.GetAxis("Horizontal");
         _direction = new Vector3(-_verticallInput, _horizontallInput, 0);
-        if(_isSpeedBoostActive==true)
-        transform.Translate(_direction *(_speed*2)* Time.deltaTime);
-        else if(_isSpeedBoostActive==false)
+        if (_isSpeedBoostActive == true)
+            transform.Translate(_direction * (_speed * 2) * Time.deltaTime);
+        else if (_isSpeedBoostActive == false)
             transform.Translate(_direction * _speed * Time.deltaTime);
 
     }
@@ -120,11 +141,13 @@ public class Player : MonoBehaviour
             {
                 GameObject newLaser = Instantiate(_laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
                 newLaser.transform.parent = _myContain.transform;
+                _laserSound.Play();
             }
             else
             {
                 GameObject newLaser = Instantiate(_tripleShoot, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
                 newLaser.transform.parent = _myContain.transform;
+                _laserSound.Play();
 
             }
 
@@ -147,12 +170,27 @@ public class Player : MonoBehaviour
 
     }
 
+    public void HpCheck()
+    {
 
+        if(_lives<=2)
+            _hp2.SetActive(true);
+        else
+            _hp2.SetActive(false);
+        if(_lives<=1)
+            _hp1.SetActive(true);
+        else
+            _hp1.SetActive(false);
+
+
+    }
 
     public void TakeDamage(int damage)
     {
-        if(_isShieldActive== false) { 
-        _lives -= damage;
+        if (_isShieldActive == false)
+        {
+            _lives -= damage;
+            UIManager.Instance.UpdateHP(_lives);
         }
         else
         {
@@ -161,42 +199,42 @@ public class Player : MonoBehaviour
         }
         if (_lives <= 0)
         {
-
+            GameManager.Instance.GameOver();
             EnemySpawner.Instance.OnplayerDead();
-
-
-            Debug.Log("Die");
             Destroy(gameObject, 0.2F);
 
+
         }
-        
+
     }
 
 
     public void ThripleShootBuff()
     {
 
-      if(_isTripleShootActive==true)  
-        StartCoroutine(TripleShootBufferDownRoutine());
-      
+       
+        if (_isTripleShootActive == true)
+            StartCoroutine(TripleShootBufferDownRoutine());
+
 
 
 
     }
     public void SpeedBuff()
-    { 
-  
+    {
+
         StartCoroutine(SpeedBufferDownRoutine());
+       
     }
 
     public void ShieldBuff()
     {
-
+       
         StartCoroutine(ShieldBufferRoutine());
     }
     IEnumerator TripleShootBufferDownRoutine()
     {
-        
+
 
         yield return new WaitForSeconds(_tripleBufftimer);
         _isTripleShootActive = false;
@@ -218,14 +256,14 @@ public class Player : MonoBehaviour
         _shield.SetActive(true);
         yield return new WaitForSeconds(_shieldBuffTimer);
         _isShieldActive = false;
-        _shield.SetActive(false);   
+        _shield.SetActive(false);
 
 
     }
     public void AddScore(int a)
     {
-        
-        _score=a+_score;
+
+        _score = a + _score;
         UIManager.Instance.UpDateScoreText(_score);
 
 
@@ -233,4 +271,3 @@ public class Player : MonoBehaviour
 }
 
 
-    

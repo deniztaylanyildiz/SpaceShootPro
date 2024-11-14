@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
     }
     private void Start()
     {
-        StartCoroutine(SpawnRoutine());
+      
     }
     // Update is called once per frame
     void Update()
@@ -32,7 +32,13 @@ public class EnemySpawner : MonoBehaviour
             
 
     }
-    void Spawn()
+    public void startSpawning()
+    {
+
+        StartCoroutine(SpawnRoutine());
+
+    }
+    public void Spawn()
     {
        
 

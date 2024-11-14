@@ -8,17 +8,12 @@ public class PowerUp : MonoBehaviour
     private float _speed;
     [SerializeField]
     private Vector2 _moveDir;
-    private Player _player;
+   
 
     [SerializeField]
     private int _buffID;
 
-    private void Awake()
-    {
-
-        _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-
-    }
+  
 
     void Start()
     {
@@ -38,21 +33,24 @@ public class PowerUp : MonoBehaviour
 
         if (collision.tag == ("Player"))
         {
-            if (_player != null) { 
+            if (Player.Instance != null) { 
             switch (_buffID)
             {
                 case 0:
-                    _player._isTripleShootActive = true;
-                    _player.ThripleShootBuff();
+                    Player.Instance._isTripleShootActive = true;
+                    Player.Instance.ThripleShootBuff();
+                      
                     break;
                 case 1:
-                    _player._isSpeedBoostActive = true;
-                    _player.SpeedBuff();
-                    break;
+                    Player.Instance._isSpeedBoostActive = true;
+                    Player.Instance.SpeedBuff();
+                     
+                        break;
                 case 2:
-                        _player._isShieldActive = true;
-                        _player.ShieldBuff();
-                    break;
+                        Player.Instance._isShieldActive = true;
+                        Player.Instance.ShieldBuff();
+                     
+                        break;
                 default:
                     Debug.Log("def");
                     break;
